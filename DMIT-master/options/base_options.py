@@ -10,8 +10,7 @@ class BaseOptions():
         self.initialized = False
 
     def initialize(self):
-        ### data configurations
-        self.parser.add_argument('--device', type=str, default='gpu', help='Device: gpu | cpu')
+        ### data configurations 
         self.parser.add_argument('--dataroot', default='./datasets/summer2winter_yosemite', help='path to images')
         self.parser.add_argument('--n_threads', default=4, type=int, help='# sthreads for loading data')
         self.parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
