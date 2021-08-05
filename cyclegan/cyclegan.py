@@ -1,7 +1,6 @@
 from __future__ import print_function, division
-import scipy
 
-from keras.datasets import mnist
+
 from keras_contrib.layers.normalization.instancenormalization import InstanceNormalization
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
@@ -11,7 +10,6 @@ from keras.models import Sequential, Model
 from keras.optimizers import Adam
 import datetime
 import matplotlib.pyplot as plt
-import sys
 from data_loader import DataLoader
 import numpy as np
 import os
@@ -97,6 +95,7 @@ class CycleGAN():
                                             self.lambda_cycle, self.lambda_cycle,
                                             self.lambda_id, self.lambda_id ],
                             optimizer=optimizer)
+        self.combined.save(f"./saved_model/{self.dataset_name}")
 
     def build_generator(self):
         """U-Net Generator"""

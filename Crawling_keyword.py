@@ -49,4 +49,6 @@ def Search_this(chromedriver_path, input_keyword, crawl_num):
             pass
     driver.close()
     
+    
+# chromedriver path, search keyword, downloadable image # 순서로
 Search_this("C:/Users/LambFerret/Python/FINAL PROJECT", "winter wallpaper", 3)
