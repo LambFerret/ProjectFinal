@@ -79,4 +79,4 @@ class DataLoader():
 
 
     def imread(self, path):
-        return imread(path, pilmode='RGB').astype(np.float)
+        return imread(path).astype(np.float)

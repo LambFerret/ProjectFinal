@@ -19,8 +19,8 @@ import os
 class CycleGAN():
     def __init__(self):
         # Input shape
-        self.img_rows = 128
-        self.img_cols = 128
+        self.img_rows = 256
+        self.img_cols = 256
         self.channels = 3
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
 
@@ -97,6 +97,8 @@ class CycleGAN():
                                             self.lambda_cycle, self.lambda_cycle,
                                             self.lambda_id, self.lambda_id ],
                             optimizer=optimizer)
+        self.combined.save(f"./saved_model/{self.dataset_name}")
+
 
     def build_generator(self):
         """U-Net Generator"""
@@ -255,4 +257,4 @@ class CycleGAN():
 
 if __name__ == '__main__':
     gan = CycleGAN()
-    gan.train(epochs=10, batch_size=1, sample_interval=200)
+    gan.train(epochs=200, batch_size=1, sample_interval=200)
