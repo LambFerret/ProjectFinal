@@ -97,7 +97,7 @@ class CycleGAN():
                                             self.lambda_cycle, self.lambda_cycle,
                                             self.lambda_id, self.lambda_id ],
                             optimizer=optimizer)
-        self.combined.save(f"./saved_model/{self.dataset_name}")
+        
 
 
     def build_generator(self):
@@ -216,8 +216,12 @@ class CycleGAN():
                                                                             elapsed_time))
 
                 # If at save interval => save generated image samples
-                if batch_i % sample_interval == 0:
+                if batch_i == 0:
                     self.sample_images(epoch, batch_i)
+
+                if epoch ==10:
+                    self.combined.save(f"./saved_model/{self.dataset_name}")
+                
 
     def sample_images(self, epoch, batch_i):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
