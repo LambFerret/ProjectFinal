@@ -138,7 +138,7 @@ class GoogleImageScraper():
         print("[INFO] Saving Image... Please wait...")
         for indx,image_url in enumerate(image_urls):
             try:
-                filename = "%s%s.%s"%(self.search_key,str(indx),self.saved_extension)
+                filename = f"""{self.search_key.replace('"',"")} {indx}.{self.saved_extension}"""
                 image_path = os.path.join(self.image_path, filename)
                 print("[INFO] %d .Image saved at: %s"%(indx,image_path))
                 image = requests.get(image_url)
