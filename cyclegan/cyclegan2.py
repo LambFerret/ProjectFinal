@@ -12,7 +12,7 @@ from keras.optimizers import Adam
 import datetime
 import matplotlib.pyplot as plt
 import sys
-from data_loader2 import DataLoader
+from data_loader3 import DataLoader
 import numpy as np
 import os
 
@@ -110,7 +110,7 @@ class CycleGAN():
             d = InstanceNormalization()(d)
             return d
 
-        def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0):
+        def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0.2):
             """Layers used during upsampling"""
             u = UpSampling2D(size=2)(layer_input)
             u = Conv2D(filters, kernel_size=f_size, strides=1, padding='same', activation='relu')(u)
