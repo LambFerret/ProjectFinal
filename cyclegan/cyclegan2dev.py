@@ -29,7 +29,7 @@ class CycleGAN():
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
 
         # Configure data loader
-        self.dataset_name = 'spring2fall'
+        self.dataset_name = 'spring2summer'
         self.data_loader = DataLoader(dataset_name=self.dataset_name,
                                       img_res=(self.img_rows, self.img_cols))
 
@@ -252,7 +252,7 @@ class CycleGAN():
                 axs[i, j].set_title(titles[j])
                 axs[i, j].axis('off')
                 cnt += 1
-        fig.savefig("./drive/MyDrive/images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
+        fig.savefig("./images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
 
     def save(self, save_path):
@@ -272,9 +272,9 @@ class CycleGAN():
 
 
 if __name__ == '__main__':
-    path = "./drive/MyDrive/saved_model/"
+    path = "./saved_model/"
     paths = glob(path + "*")
-    name = "spring2fall"
+    name = "spring2summer"
     epoch = 1
     gan = CycleGAN()
     if len(paths) == 0:
