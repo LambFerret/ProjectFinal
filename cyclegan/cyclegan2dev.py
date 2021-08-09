@@ -275,7 +275,7 @@ if __name__ == '__main__':
     path = "./drive/MyDrive/saved_model/"
     paths = glob(path + "*")
     name = "spring2fall"
-    epoch = 1
+    epoch = 8
     gan = CycleGAN()
     if len(paths) == 0:
         os.mkdir(path + name + "0")
@@ -284,7 +284,7 @@ if __name__ == '__main__':
     else:
         num = int(paths[-1][-1]) + 1
         gan.load(paths[-1])
-        Dpath = path + name + str(num * epoch)
+        Dpath = path + name + str(num)
         os.mkdir(Dpath)
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
         gan.save(Dpath)
