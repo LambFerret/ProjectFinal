@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 import scipy
-
+import tensorflow
 from keras.datasets import mnist
+import keras
 from tensorflow_addons.layers import InstanceNormalization
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
@@ -15,6 +16,8 @@ import sys
 from data_loader3 import DataLoader
 import numpy as np
 import os
+from glob import glob
+
 
 
 class CycleGAN():
@@ -253,26 +256,35 @@ class CycleGAN():
         plt.close()
 
     def save(self, save_path):
-        self.combined.save(save_path)
+        self.g_AB.save(save_path+"/gAB")
+        self.g_BA.save(save_path+"/gBA")
+        self.d_A.save(save_path+"/dA")
+        self.d_B.save(save_path+"/dB")
+        self.combined.save(save_path+"/combined")
 
     def load(self, load_path):
-        self.combined = tensorflow.saved_model.load(load_path)
+        self.combined = keras.models.load_model(load_path+"/combined")
+        print(self.combined)
+        self.g_AB = keras.models.load_model(load_path+"/gAB")
+        self.g_BA = keras.models.load_model(load_path+"/gBA")
+        self.d_A = keras.models.load_model(load_path+"/dA")
+        self.d_B = keras.models.load_model(load_path+"/dB")
 
 
 if __name__ == '__main__':
     path = "./drive/MyDrive/saved_model/"
     paths = glob(path + "*")
     name = "spring2fall"
-    epoch = 8
+    epoch = 1
+    gan = CycleGAN()
     if len(paths) == 0:
         os.mkdir(path + name + "0")
-        gan = CycleGAN()
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
         gan.save(path+name+"0")
     else:
         num = int(paths[-1][-1]) + 1
         gan.load(paths[-1])
-        Dpath = path + name + str(num) * epoch
+        Dpath = path + name + str(num * epoch)
         os.mkdir(Dpath)
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
         gan.save(Dpath)
