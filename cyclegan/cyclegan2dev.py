@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 import scipy
+
+import keras
 import tensorflow
 from keras.datasets import mnist
-import keras
 from tensorflow_addons.layers import InstanceNormalization
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
@@ -269,13 +270,21 @@ class CycleGAN():
         self.g_BA = keras.models.load_model(load_path+"/gBA")
         self.d_A = keras.models.load_model(load_path+"/dA")
         self.d_B = keras.models.load_model(load_path+"/dB")
+        self.combined.compile(loss=['mse', 'mse',
+                                    'mae', 'mae',
+                                    'mae', 'mae'],
+                              loss_weights=[1, 1,
+                                            self.lambda_cycle, self.lambda_cycle,
+                                            self.lambda_id, self.lambda_id],
+                              optimizer=Adam(0.0002, 0.5))
+
 
 
 if __name__ == '__main__':
     path = "./saved_model/"
     paths = glob(path + "*")
     name = "spring2summer"
-    epoch = 1
+    epoch = 10
     gan = CycleGAN()
     if len(paths) == 0:
         os.mkdir(path + name + "0")
@@ -284,7 +293,7 @@ if __name__ == '__main__':
     else:
         num = int(paths[-1][-1]) + 1
         gan.load(paths[-1])
-        Dpath = path + name + str(num * epoch)
+        Dpath = path + name + str(num)
         os.mkdir(Dpath)
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
         gan.save(Dpath)
