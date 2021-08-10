@@ -71,7 +71,9 @@ class DataLoader():
 
     def load_img(self, path):
         img = self.imread(path)
-        img = np.array(Image.fromarray(img).resize(self.img_res))
+        img = np.uint8(img)
+        img = Image.fromarray(img).resize(self.img_res)
+        img = np.array(img)
         img = img / 127.5 - 1.
         return img[np.newaxis, :, :, :]
 
