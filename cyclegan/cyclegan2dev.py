@@ -19,7 +19,6 @@ import os
 from glob import glob
 
 
-
 class CycleGAN():
     def __init__(self):
         # Input shape
@@ -169,7 +168,12 @@ class CycleGAN():
         valid = np.ones((batch_size,) + self.disc_patch)
         fake = np.zeros((batch_size,) + self.disc_patch)
 
+        Dlist = []
+        Glist = []
+
         for epoch in range(epochs):
+            Gavg = 0
+            Davg = 0
             for batch_i, (imgs_A, imgs_B) in enumerate(self.data_loader.load_batch(batch_size)):
 
                 # ----------------------
@@ -220,6 +224,22 @@ class CycleGAN():
                 if batch_i == 0:
                     self.sample_images(epoch, batch_i)
 
+                Davg += d_loss[0]
+                Gavg += g_loss[0]
+
+            Davg = Davg / self.data_loader.n_batches
+            Gavg = Gavg / self.data_loader.n_batches
+
+            Dlist.append(Davg)
+            Glist.append(Gavg)
+
+        plt.plot(Dlist)
+        plt.savefig("./Davg")
+        plt.close()
+        plt.plot(Glist)
+        plt.savefig("./Gavg")
+        plt.close()
+
     def sample_images(self, epoch, batch_i):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
         r, c = 2, 3
@@ -256,31 +276,42 @@ class CycleGAN():
         plt.close()
 
     def save(self, save_path):
-        self.g_AB.save(save_path+"/gAB")
-        self.g_BA.save(save_path+"/gBA")
-        self.d_A.save(save_path+"/dA")
-        self.d_B.save(save_path+"/dB")
-        self.combined.save(save_path+"/combined")
+        self.g_AB.save(save_path + "/gAB")
+        self.g_BA.save(save_path + "/gBA")
+        self.d_A.save(save_path + "/dA")
+        self.d_B.save(save_path + "/dB")
+        self.combined.save(save_path + "/combined")
 
     def load(self, load_path):
-        self.combined = keras.models.load_model(load_path+"/combined")
-        print(self.combined)
-        self.g_AB = keras.models.load_model(load_path+"/gAB")
-        self.g_BA = keras.models.load_model(load_path+"/gBA")
-        self.d_A = keras.models.load_model(load_path+"/dA")
-        self.d_B = keras.models.load_model(load_path+"/dB")
+        self.combined = keras.models.load_model(load_path + "/combined")
+        print("combined loaded in :" + load_path)
+        self.g_AB = keras.models.load_model(load_path + "/gAB")
+        print("g_AB loaded")
+        self.g_BA = keras.models.load_model(load_path + "/gBA")
+        print("g_BA loaded")
+        self.d_A = keras.models.load_model(load_path + "/dA")
+        print("d_A loaded")
+        self.d_B = keras.models.load_model(load_path + "/dB")
+        print("d_B loaded")
+        self.combined.compile(loss=['mse', 'mse',
+                                    'mae', 'mae',
+                                    'mae', 'mae'],
+                              loss_weights=[1, 1,
+                                            self.lambda_cycle, self.lambda_cycle,
+                                            self.lambda_id, self.lambda_id],
+                              optimizer=Adam(0.0002, 0.5))
 
 
 if __name__ == '__main__':
     path = "./drive/MyDrive/saved_model/"
     paths = glob(path + "*")
     name = "spring2fall"
-    epoch = 8
+    epoch = 30
     gan = CycleGAN()
     if len(paths) == 0:
         os.mkdir(path + name + "0")
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
-        gan.save(path+name+"0")
+        gan.save(path + name + "0")
     else:
         num = int(paths[-1][-1]) + 1
         gan.load(paths[-1])
@@ -288,3 +319,4 @@ if __name__ == '__main__':
         os.mkdir(Dpath)
         gan.train(epochs=epoch, batch_size=1, sample_interval=200)
         gan.save(Dpath)
+
