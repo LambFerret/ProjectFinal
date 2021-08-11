@@ -52,6 +52,7 @@ class Predictions:
         gen_imgs = np.concatenate([imgs_A, fake_B, reconstr_A])
 
         titles = ['Original', 'Translated', 'Reconstructed']
+
         for a in range(3):
             plt.imshow(gen_imgs[a])
             plt.savefig(f"{self.load_path}/images/result_{titles[a]}")

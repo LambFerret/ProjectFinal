@@ -1,8 +1,8 @@
-.idea
+.idea/
 
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
-__pycache__
+__pycache__/
 
-saved_model/*
+saved_model/
 

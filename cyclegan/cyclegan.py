@@ -19,8 +19,13 @@ import os
 from glob import glob
 
 
-class CycleGAN():
-    def __init__(self):
+class CycleGAN:
+    def __init__(self, dataset_name, isColab):
+        if not isColab:
+            self.load_path = "."
+        else:
+            self.load_path = "./drive/MyDrive"
+
         # Input shape
         self.img_rows = 256
         self.img_cols = 256
@@ -28,9 +33,10 @@ class CycleGAN():
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
 
         # Configure data loader
-        self.dataset_name = 'spring2fall'
+        self.dataset_name = dataset_name
         self.data_loader = DataLoader(dataset_name=self.dataset_name,
-                                      img_res=(self.img_rows, self.img_cols))
+                                      img_res=(self.img_rows, self.img_cols),
+                                      load_path = self.load_path)
 
         # Calculate output shape of D (PatchGAN)
         patch = int(self.img_rows / 2 ** 4)
@@ -160,7 +166,7 @@ class CycleGAN():
 
         return Model(img, validity)
 
-    def train(self, epochs, batch_size=1, sample_interval=50):
+    def train(self, epochs, batch_size=1):
 
         start_time = datetime.datetime.now()
 
@@ -220,7 +226,6 @@ class CycleGAN():
                          np.mean(g_loss[5:6]),
                          elapsed_time))
 
-                # If at save interval => save generated image samples
                 if batch_i == 0:
                     self.sample_images(epoch, batch_i)
 
@@ -234,14 +239,13 @@ class CycleGAN():
             Glist.append(Gavg)
 
         plt.plot(Dlist)
-        plt.savefig("./Davg")
+        plt.savefig(self.load_path + "/images/Davg")
         plt.close()
         plt.plot(Glist)
-        plt.savefig("./Gavg")
+        plt.savefig(self.load_path + "/images/Gavg")
         plt.close()
 
     def sample_images(self, epoch, batch_i):
-        os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
         r, c = 2, 3
 
         imgs_A = self.data_loader.load_data(domain="A", batch_size=1, is_testing=True)
@@ -272,7 +276,7 @@ class CycleGAN():
                 axs[i, j].set_title(titles[j])
                 axs[i, j].axis('off')
                 cnt += 1
-        fig.savefig("./drive/MyDrive/images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
+        fig.savefig(self.load_path + "/images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
 
     def save(self, save_path):
@@ -301,22 +305,26 @@ class CycleGAN():
                                             self.lambda_id, self.lambda_id],
                               optimizer=Adam(0.0002, 0.5))
 
+    def making_path(self, num):
+        os.makedirs(self.load_path + '/images/' + self.dataset_name + "/", exist_ok=True)
+        Dpath = self.load_path + "/saved_model/" + self.dataset_name + str(num) + "/"
+        os.makedirs(Dpath, exist_ok=True)
+        return Dpath
+
+    def counting(self):
+        way = glob(self.load_path + "/saved_model/*")
+        if not way:
+            num = 0
+        else:
+            num = int(way[-1][-1]) + 1
+            gan.load(way[-1])
+        return self.making_path(num)
+
 
 if __name__ == '__main__':
-    path = "./drive/MyDrive/saved_model/"
-    paths = glob(path + "*")
-    name = "spring2fall"
-    epoch = 30
-    gan = CycleGAN()
-    if len(paths) == 0:
-        os.mkdir(path + name + "0")
-        gan.train(epochs=epoch, batch_size=1, sample_interval=200)
-        gan.save(path + name + "0")
-    else:
-        num = int(paths[-1][-1]) + 1
-        gan.load(paths[-1])
-        Dpath = path + name + str(num)
-        os.mkdir(Dpath)
-        gan.train(epochs=epoch, batch_size=1, sample_interval=200)
-        gan.save(Dpath)
+    epoch = 1
 
+    gan = CycleGAN(dataset_name="spring2fall", isColab=False)
+    folder_number = gan.counting()
+    gan.train(epochs=epoch)
+    gan.save(folder_number)
