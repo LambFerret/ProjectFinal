@@ -13,7 +13,7 @@ from keras.optimizers import Adam
 import datetime
 import matplotlib.pyplot as plt
 import sys
-from data_loader3 import DataLoader
+from data_loader import DataLoader
 import numpy as np
 import os
 from glob import glob
