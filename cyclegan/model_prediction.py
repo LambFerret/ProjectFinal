@@ -51,8 +51,6 @@ class Predictions:
 
         gen_imgs = np.concatenate([imgs_A, fake_B, reconstr_A])
 
-        print("----------3---------")
-        print(gen_imgs)
         titles = ['Original', 'Translated', 'Reconstructed']
         for a in range(3):
             plt.imshow(gen_imgs[a])
@@ -62,5 +60,5 @@ class Predictions:
 
 
 if __name__ == '__main__':
-    predict = Predictions(dataset='spring2fall', loadnum=1, isColab=False)
+    predict = Predictions(dataset='spring2fall', loadnum=0, isColab=False)
     predict.sample_images()

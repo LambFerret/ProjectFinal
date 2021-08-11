@@ -84,10 +84,6 @@ class DataLoader():
         img = Image.fromarray(img).resize(self.img_res)
         img = np.array(img)
         img = img / 127.5 - 1.
-        print("----------1---------")
-        print(img)
-        print("-2-")
-        print(img[np.newaxis, :, :, :])
         return img[np.newaxis, :, :, :]
 
     def imread(self, path):
