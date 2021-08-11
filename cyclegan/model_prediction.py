@@ -62,5 +62,5 @@ class Predictions:
 
 
 if __name__ == '__main__':
-    predict = Predictions(dataset='spring2fall', loadnum=1, isColab=False)
+    predict = Predictions(dataset='spring2fall', loadnum=0, isColab=False)
     predict.sample_images()
