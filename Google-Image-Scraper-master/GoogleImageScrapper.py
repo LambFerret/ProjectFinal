@@ -39,7 +39,7 @@ class GoogleImageScraper():
                 if(headless):
                     options.add_argument('--headless')
                 driver = webdriver.Chrome(webdriver_path, chrome_options=options)
-                driver.maximize_window()
+                driver.set_window_size(1400,1050)
                 driver.get("https://www.google.com")
                 break
             except:
@@ -138,9 +138,11 @@ class GoogleImageScraper():
         print("[INFO] Saving Image... Please wait...")
         for indx,image_url in enumerate(image_urls):
             try:
-                filename = f"""{self.search_key.replace('"',"")} {indx}.{self.saved_extension}"""
-                image_path = os.path.join(self.image_path, filename)
-                print("[INFO] %d .Image saved at: %s"%(indx,image_path))
+                sk = re.sub('[-=.#/?:$}"]', '', self.search_key)
+                ip = re.sub('[-=.#/?:$}"]', '', self.image_path)
+                filename = "%s%s.%s"%(sk.replace,str(indx),self.saved_extension)
+                image_path = os.path.join(ip, filename)
+                print("[INFO] %d .Image saved at: %s"%(indx,ip))
                 image = requests.get(image_url)
                 if image.status_code == 200:
                     with open(image_path, 'wb') as f:
