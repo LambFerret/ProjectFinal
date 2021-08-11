@@ -51,8 +51,6 @@ class Predictions:
 
         gen_imgs = np.concatenate([imgs_A, fake_B, reconstr_A])
 
-        print("----------3---------")
-        print(gen_imgs)
         titles = ['Original', 'Translated', 'Reconstructed']
         for a in range(3):
             plt.imshow(gen_imgs[a])
