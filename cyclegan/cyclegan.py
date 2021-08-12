@@ -324,7 +324,7 @@ class CycleGAN:
 if __name__ == '__main__':
     epoch = 1
 
-    gan = CycleGAN(dataset_name="spring2fall", isColab=False)
+    gan = CycleGAN(dataset_name="spring2winter", isColab=True)
     folder_number = gan.counting()
     gan.train(epochs=epoch)
     gan.save(folder_number)
