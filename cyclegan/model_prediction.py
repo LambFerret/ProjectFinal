@@ -50,7 +50,7 @@ class Predictions:
         reconstr_A = self.g_BA.predict(fake_B)
 
         gen_imgs = np.concatenate([imgs_A, fake_B, reconstr_A])
-
+        gen_imgs = 0.5 * gen_imgs + 0.5
         titles = ['Original', 'Translated', 'Reconstructed']
 
         for a in range(3):

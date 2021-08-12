@@ -322,7 +322,7 @@ class CycleGAN:
 
 
 if __name__ == '__main__':
-    epoch = 1
+    epoch = 30
 
     gan = CycleGAN(dataset_name="spring2fall", isColab=False)
     folder_number = gan.counting()

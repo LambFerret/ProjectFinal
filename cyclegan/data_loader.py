@@ -19,14 +19,20 @@ class DataLoader:
             img = self.imread(img_path)
             if not is_testing:
                 img = Image.fromarray(img).resize(self.img_res)
-
                 if np.random.random() > 0.5:
                     img = np.fliplr(img)
+
+                selected_num = np.random.randint(4)
+                ls = np.zeros(4)
+                ls[selected_num] = 256/4
+                tp = tuple(ls)
+                img = Image.crop(tp)
+
             else:
                 img = Image.fromarray(img).resize(self.img_res)
             img = np.array(img)
             imgs.append(img)
-        imgs = np.array(imgs) / 255
+        imgs = np.array(imgs) / 127.5 - 1
 
         return imgs
 
@@ -62,8 +68,8 @@ class DataLoader:
                 imgs_A.append(img_A)
                 imgs_B.append(img_B)
 
-            imgs_A = np.array(imgs_A) / 255
-            imgs_B = np.array(imgs_B) / 255
+            imgs_A = np.array(imgs_A) / 127.5 - 1
+            imgs_B = np.array(imgs_B) / 127.5 - 1
 
             yield imgs_A, imgs_B
 
@@ -71,7 +77,7 @@ class DataLoader:
         img = self.imread(path)
         img = Image.fromarray(img).resize(self.img_res)
         img = np.array(img)
-        img = img / 255
+        img = img / 127.5 - 1
         return img[np.newaxis, :, :, :]
 
     def imread(self, path):
