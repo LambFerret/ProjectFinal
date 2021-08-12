@@ -32,8 +32,8 @@ class Predictions:
         self.lambda_id = 0.1 * self.lambda_cycle
 
         self.data_loader = DataLoader(dataset_name=self.dataset_name,
-                                      img_res=(self.img_rows, self.img_cols))
-
+                                      img_res=(self.img_rows, self.img_cols),
+                                      load_path = self.load_path)
         self.g_AB = models.load_model(
             self.load_path + "/saved_model/" + self.dataset_name + str(self.load_number) + "/gAB")
         print("g_AB loaded")
