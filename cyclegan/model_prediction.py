@@ -50,7 +50,9 @@ class Predictions:
         reconstr_A = self.g_BA.predict(fake_B)
 
         gen_imgs = np.concatenate([imgs_A, fake_B, reconstr_A])
+
         gen_imgs = 0.5 * gen_imgs + 0.5
+
         titles = ['Original', 'Translated', 'Reconstructed']
 
         for a in range(3):
@@ -61,5 +63,5 @@ class Predictions:
 
 
 if __name__ == '__main__':
-    predict = Predictions(dataset='spring2fall', loadnum=0, isColab=False)
+    predict = Predictions(dataset='spring2fall', loadnum=0, isColab=True)
     predict.sample_images()

@@ -16,21 +16,14 @@ class DataLoader:
         batch_images = np.random.choice(path, size=batch_size)
         imgs = []
         for img_path in batch_images:
-            img = self.imread(img_path)
+            img = Image.open(img_path).resize(self.img_res)
+
             if not is_testing:
-                img = Image.fromarray(img).resize(self.img_res)
+                img = self.random_crop(img)
                 if np.random.random() > 0.5:
                     img = np.fliplr(img)
 
-                selected_num = np.random.randint(4)
-                ls = np.zeros(4)
-                ls[selected_num] = 256/4
-                tp = tuple(ls)
-                img = Image.crop(tp)
-
-            else:
-                img = Image.fromarray(img).resize(self.img_res)
-            img = np.array(img)
+            img = np.uint8(img)
             imgs.append(img)
         imgs = np.array(imgs) / 127.5 - 1
 
@@ -54,17 +47,19 @@ class DataLoader:
             batch_B = path_B[i * batch_size:(i + 1) * batch_size]
             imgs_A, imgs_B = [], []
             for img_A, img_B in zip(batch_A, batch_B):
-                img_A = self.imread(img_A)
-                img_B = self.imread(img_B)
+                img_A = Image.open(img_A).resize(self.img_res)
+                img_B = Image.open(img_B).resize(self.img_res)
 
-                img_A = Image.fromarray(img_A).resize(self.img_res)
-                img_B = Image.fromarray(img_B).resize(self.img_res)
+                if not is_testing:
+                    img_A = self.random_crop(img_A)
+                    img_B = self.random_crop(img_B)
+                    if np.random.random() > 0.5:
+                        img_A = np.fliplr(img_A)
+                        img_B = np.fliplr(img_B)
 
-                if not is_testing and np.random.random() > 0.5:
-                    img_A = np.fliplr(img_A)
-                    img_B = np.fliplr(img_B)
-                img_A = np.array(img_A)
-                img_B = np.array(img_B)
+                img_A = np.uint8(img_A)
+                img_B = np.uint8(img_B)
+
                 imgs_A.append(img_A)
                 imgs_B.append(img_B)
 
@@ -74,11 +69,16 @@ class DataLoader:
             yield imgs_A, imgs_B
 
     def load_img(self, path):
-        img = self.imread(path)
-        img = Image.fromarray(img).resize(self.img_res)
-        img = np.array(img)
-        img = img / 127.5 - 1
+        img = Image.open(path).resize(self.img_res)
+        img = np.uint8(img) / 127.5 - 1
         return img[np.newaxis, :, :, :]
 
-    def imread(self, path):
-        return imread(path, as_gray=False, pilmode="RGB").astype(np.uint8)
+    def random_crop(self, img):
+        ls = [0, 0, 256, 256]
+        cont = [1, 1, -1, -1]
+
+        rand = np.random.randint(4)
+        ls[rand] += cont[rand] * (256 / 4)
+        img = img.crop(ls)
+        img = img.resize(self.img_res)
+        return img
