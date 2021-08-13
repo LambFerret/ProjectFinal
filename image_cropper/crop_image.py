@@ -19,3 +19,4 @@ for (root, dirs, files) in os.walk(root_dir):
                 image1 = Image.open(img_path)
                 croppedimage = image1.crop((0,0,image1.size[0],260))
                 croppedimage.save(clean_path +'/'+img_content+str(file_number)+'.jpg')
+                
